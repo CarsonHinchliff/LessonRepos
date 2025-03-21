@@ -3,7 +3,7 @@ package cn.citi.controller;
 import cn.citi.Constant;
 import cn.citi.bus.Event;
 import cn.citi.bus.EventBus;
-import cn.citi.model.StudentEvent;
+import cn.citi.model.WebSocketEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @created 2025/3/21 星期五 上午 09:08
  */
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/ws-trigger")
 @AllArgsConstructor
-public class StudentController {
+public class WSTriggerController {
     private final EventBus eventBus;
 
     @GetMapping("/get")
@@ -26,8 +26,8 @@ public class StudentController {
 
     @GetMapping("/publish")
     public String publish(String name){
-        var studentEvent = new StudentEvent(name);
-        eventBus.publish(Constant.Channels.STUDENT_CHANNEL, new Event<StudentEvent>(studentEvent));
-        return studentEvent.getName();
+        var event = new WebSocketEvent(name);
+        eventBus.publish(Constant.Channels.WEBSOCKET_CHANNEL, new Event<WebSocketEvent>(event));
+        return name;
     }
 }

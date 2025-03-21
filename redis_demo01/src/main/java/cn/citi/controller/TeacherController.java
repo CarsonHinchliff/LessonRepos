@@ -1,5 +1,6 @@
 package cn.citi.controller;
 
+import cn.citi.Constant;
 import cn.citi.bus.Event;
 import cn.citi.bus.EventBus;
 import cn.citi.model.StudentEvent;
@@ -27,7 +28,7 @@ public class TeacherController {
     @GetMapping("/publish")
     public String publish(String name){
         var teacherEvent = new TeacherEvent(name);
-        eventBus.publish("TeacherChannel", new Event<TeacherEvent>(teacherEvent));
+        eventBus.publish(Constant.Channels.TEACHER_CHANNEL, new Event<TeacherEvent>(teacherEvent));
         return teacherEvent.getName();
     }
 }

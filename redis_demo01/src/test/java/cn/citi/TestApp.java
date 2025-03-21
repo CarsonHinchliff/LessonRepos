@@ -5,9 +5,11 @@ import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import java.util.Set;
 
@@ -17,6 +19,10 @@ import java.util.Set;
  */
 @SpringBootTest(classes = {Main.class})
 public class TestApp {
+
+    @MockBean
+    private ServerEndpointExporter serverEndpoint;
+
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 

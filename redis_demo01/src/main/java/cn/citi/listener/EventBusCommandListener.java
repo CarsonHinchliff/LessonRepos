@@ -1,5 +1,6 @@
 package cn.citi.listener;
 
+import cn.citi.Constant;
 import cn.citi.bus.EventBus;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +16,8 @@ public class EventBusCommandListener implements CommandLineRunner {
     private final EventBus eventBus;
     @Override
     public void run(String... args) throws Exception {
-        eventBus.subscribe("StudentChannel", new StudentListener());
-        eventBus.subscribe("TeacherChannel", new TeacherListener());
+        eventBus.subscribe(Constant.Channels.STUDENT_CHANNEL, new StudentListener());
+        eventBus.subscribe(Constant.Channels.TEACHER_CHANNEL, new TeacherListener());
+        eventBus.subscribe(Constant.Channels.WEBSOCKET_CHANNEL, new WebSocketListener());
     }
 }

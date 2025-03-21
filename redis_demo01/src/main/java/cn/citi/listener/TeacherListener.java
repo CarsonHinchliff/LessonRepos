@@ -11,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
  * @created 2025/3/21 星期五 上午 09:29
  */
 @Slf4j
-public class TeacherListener implements EventBusListener<Event<TeacherEvent>> {
+public class TeacherListener implements EventBusListener<TeacherEvent> {
     @Override
-    public void onEvent(Event<Event<TeacherEvent>> event) {
+    public void onEvent(Event<TeacherEvent> event) {
         log.info(event.toString());
     }
 
