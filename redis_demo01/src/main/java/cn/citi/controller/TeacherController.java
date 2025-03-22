@@ -5,7 +5,10 @@ import cn.citi.bus.Event;
 import cn.citi.bus.EventBus;
 import cn.citi.model.StudentEvent;
 import cn.citi.model.TeacherEvent;
+import cn.citi.queue.DelayQueue;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/teacher")
-@AllArgsConstructor
 public class TeacherController {
     private final EventBus eventBus;
+
+    private final DelayQueue delayQueue;
+    private final DelayQueue delayQueue1;
+
+    public TeacherController(EventBus eventBus,
+                             @Qualifier("teacherQueue")DelayQueue delayQueue,
+                             @Qualifier("teacherQueue1")DelayQueue delayQueue1) {
+        this.eventBus = eventBus;
+        this.delayQueue = delayQueue;
+        this.delayQueue1 = delayQueue1;
+    }
 
     @GetMapping("/get")
     public String get(){
@@ -30,5 +43,12 @@ public class TeacherController {
         var teacherEvent = new TeacherEvent(name);
         eventBus.publish(Constant.Channels.TEACHER_CHANNEL, new Event<TeacherEvent>(teacherEvent));
         return teacherEvent.getName();
+    }
+
+    @GetMapping("/delay-publish")
+    public String delayPublish(String name){
+        this.delayQueue.push(name, 10);
+        this.delayQueue1.push(name, 10);
+        return name;
     }
 }
