@@ -6,6 +6,7 @@ import cn.citi.bus.EventBus;
 import cn.citi.model.StudentEvent;
 import cn.citi.pubsub.RedisMessagePublisher;
 import cn.citi.queue.DelayQueue;
+import cn.citi.svc.StudentCacheSvc;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,19 +26,34 @@ public class StudentController {
     private final DelayQueue delayQueue;
     private final DelayQueue delayQueue1;
 
+    private final StudentCacheSvc studentCacheSvc;
+
     public StudentController(EventBus eventBus,
                              RedisMessagePublisher redisMessagePublisher,
                              @Qualifier("studentQueue")DelayQueue delayQueue,
-                             @Qualifier("studentQueue1")DelayQueue delayQueue1) {
+                             @Qualifier("studentQueue1")DelayQueue delayQueue1,
+                             StudentCacheSvc studentCacheSvc) {
         this.eventBus = eventBus;
         this.redisMessagePublisher = redisMessagePublisher;
         this.delayQueue = delayQueue;
         this.delayQueue1 = delayQueue1;
+        this.studentCacheSvc = studentCacheSvc;
     }
 
     @GetMapping("/get")
     public String get(){
         return "Hello";
+    }
+
+    @GetMapping("/say")
+    public String say(String name) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.studentCacheSvc.say(name))
+        .append("\n")
+        .append(this.studentCacheSvc.say2(name))
+        .append("\n")
+        .append(this.studentCacheSvc.say3(name));
+        return sb.toString();
     }
 
     @GetMapping("/publish")
