@@ -4,6 +4,7 @@ import cn.citi.Constant;
 import cn.citi.bus.Event;
 import cn.citi.bus.EventBus;
 import cn.citi.model.StudentEvent;
+import cn.citi.pubsub.RedisMessagePublisher;
 import cn.citi.queue.DelayQueue;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,14 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/student")
 public class StudentController {
     private final EventBus eventBus;
+    private final RedisMessagePublisher redisMessagePublisher;
 
     private final DelayQueue delayQueue;
     private final DelayQueue delayQueue1;
 
     public StudentController(EventBus eventBus,
+                             RedisMessagePublisher redisMessagePublisher,
                              @Qualifier("studentQueue")DelayQueue delayQueue,
                              @Qualifier("studentQueue1")DelayQueue delayQueue1) {
         this.eventBus = eventBus;
+        this.redisMessagePublisher = redisMessagePublisher;
         this.delayQueue = delayQueue;
         this.delayQueue1 = delayQueue1;
     }
@@ -40,6 +44,7 @@ public class StudentController {
     public String publish(String name){
         var studentEvent = new StudentEvent(name);
         eventBus.publish(Constant.Channels.STUDENT_CHANNEL, new Event<StudentEvent>(studentEvent));
+        redisMessagePublisher.publish(Constant.Channels.STUDENT_CHANNEL, "message for:" + name);
         return studentEvent.getName();
     }
 

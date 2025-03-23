@@ -36,7 +36,7 @@ public class RedisEventBus<T> extends RedisPubSubAdapter<String, String> impleme
                 Event<T> event = JSON.parseObject(message, new TypeReference<Event<T>>() {});
                 listener.onEvent(event);
             }catch (Exception e){
-                log.error(e.getMessage());
+                log.error("Error when parsing message: " + message + "\r\n" + "Error: " + e.getMessage());
             }
         }
     }

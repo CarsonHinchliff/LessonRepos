@@ -4,6 +4,7 @@ import cn.citi.Constant;
 import cn.citi.bus.Event;
 import cn.citi.bus.EventBus;
 import cn.citi.model.WebSocketEvent;
+import cn.citi.pubsub.RedisMessagePublisher;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class WSTriggerController {
     private final EventBus eventBus;
+    private final RedisMessagePublisher redisMessagePublisher;
 
     @GetMapping("/get")
     public String get(){
@@ -28,6 +30,7 @@ public class WSTriggerController {
     public String publish(String name){
         var event = new WebSocketEvent(name);
         eventBus.publish(Constant.Channels.WEBSOCKET_CHANNEL, new Event<WebSocketEvent>(event));
+        redisMessagePublisher.publish(Constant.Channels.WEBSOCKET_CHANNEL, "message for:" + name);
         return name;
     }
 }
