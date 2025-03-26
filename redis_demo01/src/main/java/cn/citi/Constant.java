@@ -10,4 +10,8 @@ public interface Constant {
        String TEACHER_CHANNEL = "TeacherChannel";
        String WEBSOCKET_CHANNEL = "WebSocketChannel";
     }
+
+    interface Redis{
+        String Prefix = "carson-redis-demo:";
+    }
 }

@@ -1,15 +1,18 @@
 package cn.citi.cache;
 
+import cn.citi.Constant;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +30,12 @@ public class CacheConfig {
         template.setConnectionFactory(redisConnectionFactory);
 
         // 设置键的序列化方式
-        template.setKeySerializer(new StringRedisSerializer());
+        template.setKeySerializer(new StringRedisSerializer(){
+            @Override
+            public byte[] serialize(String value) {
+                return (Constant.Redis.Prefix + value).getBytes();
+            }
+        });
         // 设置值的序列化方式
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
@@ -37,9 +45,13 @@ public class CacheConfig {
     // for @Cacheable
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-        return RedisCacheManager.builder(connectionFactory)
-                .withInitialCacheConfigurations(cacheConfigurations)
-                .build();
+//        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+//        return RedisCacheManager.builder(connectionFactory)
+//                .withInitialCacheConfigurations(cacheConfigurations)
+//                .build();
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(-1));
+        RedisCacheWriter cacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory);
+        return new CustomRedisCacheManager(cacheWriter, config);
     }
 }

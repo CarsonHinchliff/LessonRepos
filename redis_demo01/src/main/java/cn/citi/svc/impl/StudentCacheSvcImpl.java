@@ -12,21 +12,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class StudentCacheSvcImpl implements StudentCacheSvc {
     @Override
-    @CustomCacheable(cacheName = "studentSvcCache", key = "#p0", expire = 10)
-    public String say(String name) {
-        return "say method called in StudentCacheSvcImpl: " + name;
+    @CustomCacheable(cacheName = "studentSvcCache1", key = "#p0", expire = 30)
+    public String say1(String name) {
+        return "say1 method called in StudentCacheSvcImpl: " + name;
     }
 
     @Override
-    @CustomCacheable(cacheName = "studentSvcCache1", key = "#p0", expire = 30)
+    @CustomCacheable(cacheName = "studentSvcCache2", key = "#p0", expire = 30)
     public String say2(String name) {
         return "say2 method called in StudentCacheSvcImpl: " + name;
     }
 
     @Override
-    @Cacheable(key = "'studentSvcCache3:' + #name", value = "cacheManager")
+    @Cacheable(value = "studentSvcCache3", key = "#name")
     public String say3(String name) {
-        return "say2 method called in StudentCacheSvcImpl: " + name;
+        return "say3 method called in StudentCacheSvcImpl: " + name;
+    }
+
+    @Override
+    @Cacheable(value = "studentSvcCache4#30" ,key = "#name")
+    public String say4(String name) {
+        return "say4 method called in StudentCacheSvcImpl: " + name;
     }
 }
 

@@ -48,11 +48,13 @@ public class StudentController {
     @GetMapping("/say")
     public String say(String name) {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.studentCacheSvc.say(name))
+        sb.append(this.studentCacheSvc.say1(name))
         .append("\n")
         .append(this.studentCacheSvc.say2(name))
         .append("\n")
-        .append(this.studentCacheSvc.say3(name));
+        .append(this.studentCacheSvc.say3(name))
+         .append("\n")
+        .append(this.studentCacheSvc.say4(name));
         return sb.toString();
     }
 
